@@ -200,13 +200,13 @@ const Statistics = () => {
     <Layout>
       <div className="space-y-6">
         <div className="card">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <h2 className="text-xl font-semibold">Statistics</h2>
-            <div className="flex space-x-4">
+            <div className="w-full sm:w-auto space-y-2 sm:space-y-0 sm:flex sm:space-x-4">
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="input"
+                className="w-full sm:w-auto input"
               >
                 <option value="week">Last Week</option>
                 <option value="month">Last Month</option>
@@ -215,7 +215,7 @@ const Statistics = () => {
               </select>
 
               {dateRange === 'custom' && (
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="date"
                     value={startDate}
@@ -233,12 +233,16 @@ const Statistics = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="aspect-square">
-              <Pie data={pieChartData} options={pieChartOptions} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="card p-4">
+              <div className="aspect-w-1 aspect-h-1">
+                <Pie data={pieChartData} options={pieChartOptions} />
+              </div>
             </div>
-            <div className="aspect-square">
-              <Bar data={barChartData} options={barChartOptions} />
+            <div className="card p-4">
+              <div className="aspect-w-1 aspect-h-1">
+                <Bar data={barChartData} options={barChartOptions} />
+              </div>
             </div>
           </div>
 

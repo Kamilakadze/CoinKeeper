@@ -67,7 +67,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Balance Card */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="card">
@@ -76,69 +76,84 @@ const Dashboard = () => {
               {formatCurrency(currentBalance)}
             </p>
           </div>
-          <div className="card flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Quick Actions</h3>
-              <p className="text-sm text-gray-500">Add new transactions to keep track of your finances</p>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setIsIncomeModalOpen(true)}
-                className="btn btn-success flex items-center"
-              >
-                <FiArrowUp className="mr-2" />
-                Add Income
-              </button>
-              <button
-                onClick={() => setIsExpenseModalOpen(true)}
-                className="btn btn-danger flex items-center"
-              >
-                <FiArrowDown className="mr-2" />
-                Add Expense
-              </button>
+          <div className="card">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Quick Actions</h3>
+                <p className="text-sm text-gray-500">Add new transactions to keep track of your finances</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={() => setIsIncomeModalOpen(true)}
+                  className="btn btn-success flex items-center justify-center w-full sm:w-auto"
+                >
+                  <FiArrowUp className="mr-2" />
+                  Add Income
+                </button>
+                <button
+                  onClick={() => setIsExpenseModalOpen(true)}
+                  className="btn btn-danger flex items-center justify-center w-full sm:w-auto"
+                >
+                  <FiArrowDown className="mr-2" />
+                  Add Expense
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Recent Transactions */}
         <div className="card">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-medium text-gray-900">Recent Transactions</h3>
           </div>
           
           {transactionsLoading ? (
             <div className="text-center py-4">Loading transactions...</div>
           ) : transactions.length === 0 ? (
-            <div className="text-center py-4 text-gray-500">No transactions yet</div>
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">No transactions yet</p>
+              <p className="text-gray-400 text-sm mt-2">Add your first transaction to get started</p>
+            </div>
           ) : (
-            <div className="divide-y divide-gray-200">
-              {transactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="py-4 flex items-center justify-between"
-                >
-                  <div className="flex items-center">
-                    <div className={`p-2 rounded-lg mr-4 ${
-                      transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+            <div className="divide-y divide-gray-100 -mx-6">
+              {[...transactions]
+                .sort((a, b) => {
+                  // Сначала сравниваем по дате
+                  const dateComparison = new Date(b.date) - new Date(a.date);
+                  // Если даты равны, сортируем по ID (предполагая, что большее ID = более новая транзакция)
+                  if (dateComparison === 0) {
+                    return b.id - a.id;
+                  }
+                  return dateComparison;
+                })
+                .map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="py-4 px-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`p-2 rounded-lg ${
+                        transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                      }`}>
+                        {transaction.type === 'income' ? (
+                          <FiArrowUp className="h-5 w-5 text-green-600" />
+                        ) : (
+                          <FiArrowDown className="h-5 w-5 text-red-600" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">{transaction.category_name || 'Income'}</p>
+                        <p className="text-sm text-gray-500">{formatDate(transaction.date)}</p>
+                      </div>
+                    </div>
+                    <div className={`font-medium ${
+                      transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {transaction.type === 'income' ? (
-                        <FiArrowUp className="h-5 w-5 text-green-600" />
-                      ) : (
-                        <FiArrowDown className="h-5 w-5 text-red-600" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{transaction.category_name || 'Income'}</p>
-                      <p className="text-sm text-gray-500">{formatDate(transaction.date)}</p>
+                      {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                     </div>
                   </div>
-                  <div className={`font-medium ${
-                    transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </div>
