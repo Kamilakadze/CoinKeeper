@@ -29,6 +29,8 @@ const categorySlice = createSlice({
     },
     addCategorySuccess: (state, action) => {
       state.categories.push(action.payload);
+      state.isLoading = false;
+      state.error = null;
     },
     addCategoryFailure: (state, action) => {
       state.isLoading = false;
@@ -40,6 +42,8 @@ const categorySlice = createSlice({
     },
     deleteCategorySuccess: (state, action) => {
       state.categories = state.categories.filter(cat => cat.id !== action.payload);
+      state.isLoading = false;
+      state.error = null;
     },
     deleteCategoryFailure: (state, action) => {
       state.isLoading = false;
@@ -54,6 +58,8 @@ const categorySlice = createSlice({
       if (index !== -1) {
         state.categories[index] = action.payload;
       }
+      state.isLoading = false;
+      state.error = null;
     },
     updateCategoryFailure: (state, action) => {
       state.isLoading = false;

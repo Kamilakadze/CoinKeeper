@@ -85,21 +85,42 @@ router.delete('/:id', (req, res) => {
   const { id } = req.params;
   const userId = req.user.userId;
 
-  db.run(
-    'DELETE FROM categories WHERE id = ? AND user_id = ?',
-    [id, userId],
-    function (err) {
-      if (err) {
-        return res.status(500).json({ message: 'Error deleting category' });
-      }
+  // Start a transaction to ensure data consistency
+  db.serialize(() => {
+    db.run('BEGIN TRANSACTION');
 
-      if (this.changes === 0) {
-        return res.status(404).json({ message: 'Category not found' });
-      }
+    // First update any transactions that use this category to set category_id to NULL
+    db.run(
+      'UPDATE transactions SET category_id = NULL WHERE category_id = ? AND user_id = ?',
+      [id, userId],
+      (err) => {
+        if (err) {
+          db.run('ROLLBACK');
+          return res.status(500).json({ message: 'Error updating transactions' });
+        }
 
-      res.json({ message: 'Category deleted successfully' });
-    }
-  );
+        // Then delete the category
+        db.run(
+          'DELETE FROM categories WHERE id = ? AND user_id = ?',
+          [id, userId],
+          function (err) {
+            if (err) {
+              db.run('ROLLBACK');
+              return res.status(500).json({ message: 'Error deleting category' });
+            }
+
+            if (this.changes === 0) {
+              db.run('ROLLBACK');
+              return res.status(404).json({ message: 'Category not found' });
+            }
+
+            db.run('COMMIT');
+            res.json({ message: 'Category deleted successfully' });
+          }
+        );
+      }
+    );
+  });
 });
 
 module.exports = router; 
