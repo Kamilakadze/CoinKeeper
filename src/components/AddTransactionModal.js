@@ -36,24 +36,16 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'type') {
-      setFormData(prev => ({
-        ...prev,
-        type: value,
-        categoryId: value === 'income' ? null : prev.categoryId
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'type' && value === 'income' ? value : value,
+      categoryId: name === 'type' && value === 'income' ? '' : prev.categoryId,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Валидация
     if (!formData.amount || !formData.date) {
       toast.error('Please fill in all required fields');
       return;
@@ -67,26 +59,19 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
     try {
       dispatch(addTransactionStart());
 
-      // Подготовка данных для отправки
       const transactionData = {
         type: formData.type,
         amount: parseFloat(formData.amount),
         date: formData.date,
         comment: formData.comment || '',
-        categoryId: formData.type === 'income' ? null : formData.categoryId
+        categoryId: formData.type === 'income' ? null : parseInt(formData.categoryId)
       };
 
-      console.log('Sending transaction:', transactionData);
-
       const response = await addTransaction(transactionData);
-      
-      console.log('Transaction response:', response.data);
-      
       dispatch(addTransactionSuccess(response.data));
       toast.success('Transaction added successfully');
       onClose();
     } catch (err) {
-      console.error('Error adding transaction:', err);
       dispatch(addTransactionFailure(err.message));
       toast.error(err.response?.data?.message || 'Failed to add transaction');
     }
@@ -95,121 +80,108 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-medium">Add Transaction</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
-          >
-            <FiX className="h-5 w-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Type
-            </label>
-            <select
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              className="input w-full"
-            >
-              <option value="expense">Expense</option>
-              <option value="income">Income</option>
-            </select>
+      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#1f1b2e] text-white w-full max-w-md rounded-2xl shadow-2xl p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-purple-400">Add Transaction</h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-white">
+              <FiX className="h-5 w-5" />
+            </button>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Amount
-            </label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              placeholder="0.00"
-              step="0.01"
-              min="0"
-              required
-              className="input w-full"
-            />
-          </div>
-
-          {formData.type === 'expense' && (
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
+              <label className="block text-sm text-gray-300 mb-1">Type</label>
               <select
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleChange}
-                required
-                className="input w-full"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-[#2a233d] text-white rounded-lg border border-purple-500 focus:outline-none"
               >
-                <option value="">Select a category</option>
-                {categories && categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
               </select>
             </div>
-          )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Date
-            </label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-              className="input w-full"
-            />
-          </div>
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Amount</label>
+              <input
+                  type="number"
+                  name="amount"
+                  value={formData.amount}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0"
+                  required
+                  className="w-full p-3 bg-[#2a233d] text-white rounded-lg border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Comment (Optional)
-            </label>
-            <textarea
-              name="comment"
-              value={formData.comment}
-              onChange={handleChange}
-              rows="2"
-              className="input w-full"
-              placeholder="Add a note..."
-            />
-          </div>
+            {formData.type === 'expense' && (
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">Category</label>
+                  <select
+                      name="categoryId"
+                      value={formData.categoryId}
+                      onChange={handleChange}
+                      required
+                      className="w-full p-3 bg-[#2a233d] text-white rounded-lg border border-purple-500 focus:outline-none"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                    ))}
+                  </select>
+                </div>
+            )}
 
-          <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn bg-gray-100 text-gray-700 hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Adding...' : 'Add Transaction'}
-            </button>
-          </div>
-        </form>
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Date</label>
+              <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-3 bg-[#2a233d] text-white rounded-lg border border-purple-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Comment (Optional)</label>
+              <textarea
+                  name="comment"
+                  value={formData.comment}
+                  onChange={handleChange}
+                  rows="2"
+                  className="w-full p-3 bg-[#2a233d] text-white rounded-lg border border-purple-500 focus:outline-none"
+                  placeholder="Add a note..."
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600 shadow-md"
+              >
+                Cancel
+              </button>
+              <button
+                  type="submit"
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-md hover:brightness-110"
+                  disabled={isLoading}
+              >
+                {isLoading ? 'Adding...' : 'Add Transaction'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
   );
 };
 
-export default AddTransactionModal; 
+export default AddTransactionModal;

@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       dispatch(loginStart());
       const response = await login({ email, password });
@@ -28,84 +28,64 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md">
-        <div className="bg-white shadow-lg rounded-2xl px-8 py-10 space-y-8">
-          <div>
-            <h2 className="text-center text-3xl font-bold tracking-tight text-gray-900">
-              Sign in to your account
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Or{' '}
-              <Link
-                to="/register"
-                className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
-              >
-                create a new account
-              </Link>
-            </p>
-          </div>
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-5">
-              <div>
-                <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="email-address"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    className="input focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-              </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] px-4">
+        <div className="w-full max-w-md rounded-2xl shadow-2xl bg-[#1f1b2e] p-8 text-white">
+          <h2 className="text-2xl font-semibold text-center mb-2">Sign in to your account</h2>
+          <p className="text-sm text-center mb-6 text-purple-300">
+            Or{' '}
+            <Link to="/register" className="text-pink-400 hover:underline">
+              create a new account
+            </Link>
+          </p>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    className="input focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-              </div>
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div>
+              <label className="block mb-1 text-sm text-purple-200" htmlFor="email">
+                Email address
+              </label>
+              <input
+                  type="email"
+                  id="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-md bg-[#1f1d2b] text-white placeholder-gray-400 border border-transparent focus:outline-none focus:ring-0 focus:border-pink-400 transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm text-purple-200" htmlFor="password">
+                Password
+              </label>
+              <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-md bg-[#1f1d2b] text-white placeholder-gray-400 border border-transparent focus:outline-none focus:ring-0 focus:border-pink-400 transition-all"
+              />
             </div>
 
             {error && (
-              <div className="text-sm text-center text-red-600 bg-red-50 rounded-lg py-2">
-                {error}
-              </div>
+                <div className="bg-red-500/10 text-red-400 text-sm py-2 px-4 rounded-lg text-center">
+                  {error}
+                </div>
             )}
 
-            <div>
-              <button
+            <button
                 type="submit"
                 disabled={isLoading}
-                className="btn btn-primary w-full py-3 text-base font-medium shadow-sm hover:brightness-105 transition-all"
-              >
-                {isLoading ? 'Signing in...' : 'Sign in'}
-              </button>
-            </div>
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-500 hover:brightness-110 transition text-white font-semibold shadow-lg"
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </button>
           </form>
         </div>
       </div>
-    </div>
   );
 };
 
-export default Login; 
+export default Login;

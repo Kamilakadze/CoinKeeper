@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -30,10 +29,32 @@ module.exports = {
           800: '#1e293b',
           900: '#0f172a',
         },
+        background: {
+          dark: '#0f0c29',
+          purple: '#302b63',
+          neon: '#24243e'
+        },
+        glass: {
+          light: 'rgba(255, 255, 255, 0.05)',
+          dark: 'rgba(0, 0, 0, 0.3)'
+        },
+        accent: {
+          pink: '#ff4ecd',
+          blue: '#00d4ff',
+          violet: '#7f00ff'
+        }
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      boxShadow: {
+        glass: '0 8px 32px 0 rgba( 31, 38, 135, 0.37 )',
+      },
+      backdropBlur: {
+        sm: '4px',
+        md: '8px',
+        lg: '16px'
+      }
     },
   },
   plugins: [],

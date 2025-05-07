@@ -4,33 +4,45 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: #0f0e13; /* почти чёрный с фиолетовым оттенком */
+    font-family: 'Poppins', sans-serif;
   }
 }
 
+
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply px-4 py-2 rounded-xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg;
   }
-  
-  .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm;
-  }
-  
-  .btn-success {
-    @apply bg-green-600 text-white hover:bg-green-700 active:bg-green-800 shadow-sm;
-  }
-  
-  .btn-danger {
-    @apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm;
-  }
-  
-  .input {
-    @apply block w-full px-4 py-2.5 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
-  }
-  
-  .card {
-    @apply bg-white rounded-xl shadow-sm p-6 border border-gray-100;
-  }
-} 
 
+  .btn-primary {
+    @apply bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 text-white hover:brightness-110;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-green-400 to-green-600 text-white hover:brightness-110;
+  }
+
+  .btn-danger {
+    @apply bg-gradient-to-r from-red-500 to-pink-600 text-white hover:brightness-110;
+  }
+
+  .input {
+    @apply w-full px-4 py-2.5 bg-[#1e293b] text-gray-100 placeholder-gray-400 border border-[#334155] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200;
+  }
+
+  .card {
+    @apply bg-[#1e293b] rounded-2xl p-6 shadow-xl border border-[#334155];
+  }
+
+  .glass {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl;
+  }
+}
+
+/* Custom utilities for neon effects (optional) */
+@layer utilities {
+  .neon-text {
+    text-shadow: 0 0 5px #9333ea, 0 0 10px #9333ea, 0 0 20px #9333ea;
+  }
+}
